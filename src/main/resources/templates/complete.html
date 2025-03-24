@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html>
+<head>
+<meta charset="UTF-8">
+<title>登録完了画面</title>
+</head>
+<body>
+	<h2 th:text="${'ようこそ'  + user_name + 'さん'}"></h2>
+	<h2>ユーザの登録が完了しました。</h2>
+	
+	<a th:href="@{/home}">ユーザホーム画面へ</a></p>
+</body>
+</html>

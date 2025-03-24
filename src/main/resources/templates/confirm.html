@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>登録確認画面</title>
+    <script>
+        function togglePassword() {
+            var passwordField = document.getElementById("passwordField");
+            var toggleButton = document.getElementById("toggleButton");
+
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                toggleButton.textContent = "非表示";
+            } else {
+                passwordField.type = "password";
+                toggleButton.textContent = "表示";
+            }
+        }
+    </script>
+</head>
+<body>
+    <h2>登録情報の確認</h2>
+    <h3>以下の情報で登録します。</h3>
+    <p>ユーザ名: <span th:text="${user_name}"></span></p>
+    <p>
+        パスワード: 
+        <input type="password" id="passwordField" th:value="${password}" readonly>
+        <button type="button" id="toggleButton" onclick="togglePassword()">表示</button>
+    </p>
+
+    <form th:action="@{/register/complete}" method="post">
+        <input type="hidden" name="user_name" th:value="${user_name}">
+        <input type="hidden" name="password" th:value="${password}">
+        <button type="submit">登録確定</button>
+        <button type="reset">戻る</button>
+    </form>
+</body>
+</html>
