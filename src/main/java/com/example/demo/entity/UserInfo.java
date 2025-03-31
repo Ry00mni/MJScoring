@@ -16,7 +16,7 @@ public class UserInfo {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "user_id", nullable = false)
-	private Long id;      //自動採番のUID
+	private Long userId;      //自動採番のUID
 	
 	/*
 	 * @Columnアノテーション

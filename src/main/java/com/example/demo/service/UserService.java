@@ -28,8 +28,8 @@ public class UserService {
 		Optional<UserInfo> userOpt = userRepository.findByUserName(userName);
 		
 		// ユーザが存在する、かつパスワードが一致する場合のみ認証成功
-		boolean b = userOpt.isPresent() && userOpt.get().getPassword().equals(pass);
-		System.out.println(b);
+//		boolean b = userOpt.isPresent() && userOpt.get().getPassword().equals(pass);
+//		System.out.println(b);
 		if (userOpt.isPresent() && userOpt.get().getPassword().equals(pass)) {
 			return userOpt.get();	
 		}

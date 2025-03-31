@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>対局設定</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        .container { max-width: 400px; margin: 50px auto; }
+        button { padding: 10px 20px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>対局設定</h2>
+        <form action="/game" method="post">
+            <label>ゲームタイプ：</label>
+            <select name="gameType">
+                <option value="東風">東風戦</option>
+                <option value="半荘">半荘戦</option>
+            </select><br><br>
+
+            <label>初期持ち点：</label>
+            <input type="number" name="startingPoints" value="25000" required><br><br>
+
+            <button type="submit">対局開始</button>
+        </form>
+    </div>
+</body>
+</html>

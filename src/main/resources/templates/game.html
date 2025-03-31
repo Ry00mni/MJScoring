@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>対局画面</title>
+     <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        .container { max-width: 400px; margin: 50px auto; }
+        button { padding: 10px 20px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h2>対局画面</h2>
+    
+   <p>ゲームタイプ: <span th:text="${match.gameType}"></span></p>
+<p>持ち点: <span th:text="${displayScore}"></span></p>
+
+<!-- 現在の局と場風の表示 -->
+<p>現在の局: <span th:text="${roundNumber}"></span>局</p>
+<p>場風: <span th:text="${prevailingWind}"></span></p>
+
+<!-- その他の内容はそのまま -->
+<form action="/calculate-score" method="post">
+    <label>自風:</label>
+    <select name="seatWind">
+        <option value="東">東</option>
+        <option value="南">南</option>
+        <option value="西">西</option>
+        <option value="北">北</option>
+    </select><br><br>
+
+    <label>翻数:</label>
+    <input type="number" name="han" required><br><br>
+
+    <label>符:</label>
+    <input type="number" name="fu" required><br><br>
+
+    <button type="submit">計算</button>
+</form>
+
+<br>
+<form action="/game/updateScore" method="post">
+    <button type="submit">次の対局へ</button>
+</form>
+
+<form action="/end-game" method="post">
+    <button type="submit">対局終了</button>
+</form>

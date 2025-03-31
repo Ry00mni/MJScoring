@@ -36,6 +36,7 @@ public class LoginController {
 		if (user != null) {
 			// ユーザ情報をセッションに保存
 			session.setAttribute("loginUser", user);
+			session.setAttribute("userId", user.getUserId());
 			return "redirect:/home";
 		}
 		model.addAttribute("error","ユーザ名、またはパスワードに誤りがあります。");
