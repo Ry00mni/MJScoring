@@ -2,46 +2,118 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>対局画面</title>
-     <style>
+    <style>
         body { font-family: Arial, sans-serif; text-align: center; }
         .container { max-width: 400px; margin: 50px auto; }
         button { padding: 10px 20px; margin-top: 20px; }
     </style>
 </head>
 <body>
-    <h2>対局画面</h2>
+    <h2>対局中</h2>
     
-   <p>ゲームタイプ: <span th:text="${match.gameType}"></span></p>
-<p>持ち点: <span th:text="${displayScore}"></span></p>
+    <p>ゲームタイプ: <span th:text="${match.gameType}"></span></p>
+    <p><span th:text="${displayRound}"></span></p>
+    <p>持ち点: <span th:text="${displayScore}"></span></p>
+    <p>自風:<span th:text="${ownWind}"></span>家</p>
+    <br>
+    <p id="roleDisplay">あなたは <span id="role"></span> です</p>
 
-<!-- 現在の局と場風の表示 -->
-<p>現在の局: <span th:text="${roundNumber}"></span>局</p>
-<p>場風: <span th:text="${prevailingWind}"></span></p>
+    <script>
+    function updateRole() {
+        // Thymeleaf で値を埋め込む
+        let gameType = "[[${gameType}]]";  // "東風" or "半荘"
+        let ownWind = "[[${ownWind}]]";  // 自風（東, 南, 西, 北）
+    
+        console.log("gameType:", gameType);
+        console.log("ownWind:", ownWind);
+    
+        // 親判定ロジック
+        let isParent = (gameType === "東風" && ownWind === "東") || 
+                       (gameType === "半荘" && ownWind === "南");
+    
+        document.getElementById("role").textContent = isParent ? "親" : "子";
+    }
+    
+    // ページ読み込み時に実行
+    window.onload = updateRole;
+    </script>
+    
+    <form action="/game/updateScore" method="post">
+        <!-- 隠しフィールド (POST時に送るデータ) -->
+        <input type="hidden" id="scoreChange" name="scoreChange" value="">
+        <input type="hidden" id="han" name="han" value="">
+        <input type="hidden" id="fu" name="fu" value="">
+        <input type="hidden" id="tsumo" name="tsumo" value="">
+        <input type="hidden" id="isHouju" name="isHouju" value="">
+        
+        <!-- 翻数、符数、ツモの入力フォーム -->
+        翻数: <input type="number" id="hanInput"><br>
+        符数: <input type="number" id="fuInput"><br>
+        ツモ: <input type="checkbox" id="tsumoInput"><br>
+		 <!-- 放銃/和了の選択 (ラジオボタン) -->
+		    <label>
+		        <input type="radio" name="houjuOption" value="false" checked> 和了
+		    </label>
+		    <label>
+		        <input type="radio" name="houjuOption" value="true"> 放銃
+		    </label>
+        <button type="button" onclick="updateScore()">計算</button>
+        <p>計算結果: <span id="scoreDisplay">-</span></p>
+        
+        <button type="submit">次の対局へ</button>
+    </form>
+    
+    <script>
+	let isHouju = false; // デフォルトは和了
 
-<!-- その他の内容はそのまま -->
-<form action="/calculate-score" method="post">
-    <label>自風:</label>
-    <select name="seatWind">
-        <option value="東">東</option>
-        <option value="南">南</option>
-        <option value="西">西</option>
-        <option value="北">北</option>
-    </select><br><br>
+	function setHouju(value) {
+	isHouju = value; // true (放銃) or false (和了)
+	console.log("isHouju set to:", isHouju);
+	}
+	
+    function updateScore() {
+        // ユーザー入力を取得
+		    // ユーザー入力を取得
+	    let han = document.getElementById("hanInput").value;
+	    let fu = document.getElementById("fuInput").value;
+	    let tsumo = document.getElementById("tsumoInput").checked;
+	    
+	    // 放銃/和了の選択状態を取得
+	    let isHouju = document.querySelector('input[name="houjuOption"]:checked').value;
 
-    <label>翻数:</label>
-    <input type="number" name="han" required><br><br>
+        
+        // 入力チェック
+        if (han === "" || fu === "") {
+            document.getElementById("scoreDisplay").textContent = "翻数と符数を入力してください";
+            return;
+        }
+        
+        // 計算リクエストを送信
+        fetch("/calculate-score", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        	body: "han=" + han + "&fu=" + fu + "&tsumo=" + tsumo + "&isHouju=" + isHouju
+        })
+        .then(response => response.text())
+        .then(score => {
+            // 計算結果を表示
+            document.getElementById("scoreDisplay").textContent = score;
+            
+            // 隠しフィールドに設定
+            document.getElementById("scoreChange").value = score;
+            document.getElementById("han").value = han;
+            document.getElementById("fu").value = fu;
+            document.getElementById("tsumo").value = tsumo;
+           	document.getElementById("isHouju").value = isHouju;	
+        })
+        .catch(error => {
+            console.error("エラー:", error);
+        });
+    }
+    </script>
+    <form action="/end-game" method="post">
+        <button type="submit">対局終了</button>
+    </form>
 
-    <label>符:</label>
-    <input type="number" name="fu" required><br><br>
-
-    <button type="submit">計算</button>
-</form>
-
-<br>
-<form action="/game/updateScore" method="post">
-    <button type="submit">次の対局へ</button>
-</form>
-
-<form action="/end-game" method="post">
-    <button type="submit">対局終了</button>
-</form>
+</body>
+</html>

@@ -28,14 +28,14 @@ public class MatchLog {
 	private Integer roundNumber;  // 何局目か(東一局=1,東二局=2,…)
 	
 	@Column(name = "score_change")
-	private Integer	scoreChange;
+	private Integer	scoreChange; // 持ち点の増減 roundScoreに足し込む
 	
-	@Column(name = "seat_wind")
-	private String seatWind;
+	@Column(name = "own_wind")
+	private String ownWind;  // 場風(game-settingsで設定)
 	
-	@Column(name = "prevailing_wind")
-	private String prevailingWind;  // 場風(game-settingsで設定)
-	
+    @Column(name = "round_score")
+    private Integer roundScore; // 1局終了時の持ち点
+    
     @Column(name = "is_houju")
     private Boolean isHouju;  // 放銃（boolean）
 
@@ -49,8 +49,7 @@ public class MatchLog {
     private Integer fu;  // 符数
 
     @Column(name = "tsumo")
-    private Boolean tsumo;  // ツモかロンか（boolean）
+    private Boolean tsumo;  // ツモかロンか
 	
-    @Column(name = "round_score")
-    private Integer roundScore;
+
 }
